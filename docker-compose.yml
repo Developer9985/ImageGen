@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   client:
     build: ./client
@@ -11,5 +12,17 @@ services:
     build: ./server
     ports:
       - "8080:8080"
-     env_file:
+    env_file:
       - ./server/.env
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    container_name: jenkins
+
+volumes:
+  jenkins_home:
