@@ -1,0 +1,34 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout Code') {
+      steps {
+        git 'https://github.com/Developer9985/ImageGen.git'
+      }
+    }
+
+    stage('Build Client') {
+      steps {
+        dir('client') {
+          sh 'docker build -t client-image .'
+        }
+      }
+    }
+
+    stage('Build Server') {
+      steps {
+        dir('server') {
+          sh 'docker build -t server-image .'
+        }
+      }
+    }
+
+    stage('Deploy with Docker Compose') {
+      steps {
+        sh 'docker-compose down'
+        sh 'docker-compose up -d --build'
+      }
+    }
+  }
+}
