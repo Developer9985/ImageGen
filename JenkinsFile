@@ -1,34 +1,48 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Checkout Code') {
-      steps {
-        git 'https://github.com/Developer9985/ImageGen.git'
-      }
-    }
-
-    stage('Build Client') {
-      steps {
-        dir('client') {
-          sh 'docker build -t client-image .'
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                deleteDir() // Clean previous build workspace
+            }
         }
-      }
-    }
 
-    stage('Build Server') {
-      steps {
-        dir('server') {
-          sh 'docker build -t server-image .'
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/Developer9985/ImageGen.git', branch: 'main'
+            }
         }
-      }
+
+        stage('Build Docker Containers') {
+            steps {
+                script {
+                    sh 'docker-compose down'
+                    sh 'docker-compose build'
+                }
+            }
+        }
+
+        stage('Run Containers') {
+            steps {
+                script {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Show Running Containers') {
+            steps {
+                script {
+                    sh 'docker-compose ps'
+                }
+            }
+        }
     }
 
-    stage('Deploy with Docker Compose') {
-      steps {
-        sh 'docker-compose down'
-        sh 'docker-compose up -d --build'
-      }
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
     }
-  }
 }
