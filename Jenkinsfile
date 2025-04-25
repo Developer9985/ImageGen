@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clean Workspace') {
             steps {
-                deleteDir() // Clean previous build workspace
+                deleteDir()
             }
         }
 
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     
-                    sh 'docker-compose build'
+                    bat 'docker-compose build'
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Run Containers') {
             steps {
                 script {
-                    sh 'docker-compose up -d'
+                    bat 'docker-compose up -d'
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Show Running Containers') {
             steps {
                 script {
-                    sh 'docker-compose ps'
+                    bat 'docker-compose ps'
                 }
             }
         }
@@ -42,7 +42,7 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline executions completed.'
+            echo 'Pipeline execution completed.'
         }
     }
 }
